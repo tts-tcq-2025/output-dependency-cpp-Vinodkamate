@@ -3,6 +3,7 @@
 #include <string>
 #include <assert.h>
 
+void printColorMap();
 // Function to generate the color map
 std::vector<std::string> generateColorMap() {
     const char* majorColor[] = {"White", "Red", "Black", "Yellow", "Violet"};
@@ -43,3 +44,4 @@ int main() {
 
     return 0;
 }
+

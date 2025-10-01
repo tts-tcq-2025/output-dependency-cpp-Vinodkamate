@@ -17,22 +17,22 @@ namespace WeatherSpace
     /// This is a stub for a weather sensor. For the sake of testing 
     /// we create a stub that generates weather data and allows us to
     /// test the other parts of this application in isolation
-    /// without needing the actual Sensor during development
-    /// </summary>
+    /// without needing the actual Sensor during development    /// </summary>
     class SensorStub : public IWeatherSensor {
-        int Humidity() const override {
+    public:
+        int Humidity() const {
             return 72;
         }
 
-        int Precipitation() const override {
+        int Precipitation() const {
             return 70;
         }
 
-        double TemperatureInC() const override {
+        double TemperatureInC() const {
             return 26;
         }
 
-        int WindSpeedKMPH() const override {
+        int WindSpeedKMPH() const {
             return 52;
         }
     };
@@ -57,19 +57,42 @@ namespace WeatherSpace
         SensorStub sensor;
         string report = Report(sensor);
         cout << report << endl;
-        assert(report.find("rain") != string::npos);
-    }
+        assert(report.find("rain") != string::npos);    }
+    
+    // New sensor stub to expose the high precipitation bug
+    class HighPrecipitationStub : public IWeatherSensor {
+    public:
+        int Humidity() const {
+            return 85;
+        }
+
+        int Precipitation() const {
+            return 70;  // High precipitation (>60)
+        }
+
+        double TemperatureInC() const {
+            return 26;  // High temperature (>25)
+        }
+
+        int WindSpeedKMPH() const {
+            return 30;  // Low wind speed (<50)
+        }
+    };
 
     void TestHighPrecipitation()
     {
         // This instance of stub needs to be different-
         // to give high precipitation (>60) and low wind-speed (<50)
-        SensorStub sensor;
+        HighPrecipitationStub sensor;
 
         // strengthen the assert to expose the bug
         // (function returns Sunny day, it should predict rain)
         string report = Report(sensor);
-        assert(report.length() > 0);
+        cout << "High precipitation report: " << report << endl;
+        
+        // With high precipitation (70) and low wind (<50), it should predict heavy rain
+        // But due to the bug in the condition logic, it returns "Sunny Day"
+        assert(report.find("rain") != string::npos);  // This will FAIL - exposing the bug!
     }
 }
 

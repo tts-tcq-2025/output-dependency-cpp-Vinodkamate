@@ -16,7 +16,9 @@ char size(int cms) {
 void testTshirtSize() {
     std::cout << "\nTshirt size test\n";
     assert(size(37) == 'S');
+    assert(size(38) == 'S');  // This will FAIL - function returns '\0' for boundary case
     assert(size(40) == 'M');
+    assert(size(42) == 'M');  // This will FAIL - function returns '\0' for boundary case
     assert(size(43) == 'L');
     std::cout << "All is well (maybe!)\n";
 }

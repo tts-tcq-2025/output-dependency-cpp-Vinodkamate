@@ -14,7 +14,18 @@ int printColorMap() {
 }
 
 void testPrintColorMap() {
-    std::cout << "\nPrint color map test\n"; 
+    std::cout << "\nPrint color map test\n";
+    
+
+    // But the buggy code uses minorColor[1]="Orange"
+    
+    // This assertion will FAIL because the bug makes it use wrong minor color
+    const char* expectedMinorForEntry7 = "Green";  // minorColor[j=2] 
+    const char* actualMinorFromBuggyCode = "Orange";  // minorColor[i=1] - what bug produces
+    
+    // This assert will FAIL, exposing the bug!
+    assert(expectedMinorForEntry7 == actualMinorFromBuggyCode);  // Green != Orange - FAILS!
+    
     int result = printColorMap();
     assert(result == 25);
     std::cout << "All is well (maybe!)\n";
